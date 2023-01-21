@@ -19,11 +19,12 @@ spec:
     spec:
       containers:
         - name: fitnesstracker
-          image: jordanovvvv/fitnesstracker:latest
+          image: jordanovvvv/fitnesstracker:2023-01-14
           imagePullPolicy: Always
           ports:
             - containerPort: 5000
           resources:
             requests:
-              memory: "64Mi"
-              cpu: "500m"
+              memory: "256Mi"
+              cpu: "750m"
+
