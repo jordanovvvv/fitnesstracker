@@ -9,15 +9,9 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.ActionBar
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import com.example.fitnesstracker.databinding.ActivityLoginBinding
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import de.hdodenhof.circleimageview.CircleImageView
-import java.io.File
 
 class LoginActivity : AppCompatActivity() {
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
@@ -54,7 +48,7 @@ class LoginActivity : AppCompatActivity() {
             if (emailValue.isNullOrEmpty() || passwordValue.isNullOrEmpty()) {
                 Toast.makeText(
                     this,
-                    "User not registered or check your e-mail and password again!",
+                    "Invalid credentials!",
                     Toast.LENGTH_LONG
                 ).show()
             } else {
@@ -65,18 +59,13 @@ class LoginActivity : AppCompatActivity() {
                 val intent = Intent(this, RegisterActivity::class.java)
                 startActivity(intent)
             }
-
-
     }
-
-
 
     private fun loginUser(emailValue: String, passwordValue: String) {
         mAuth.signInWithEmailAndPassword(emailValue, passwordValue)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     navigateOut()
-
                 } else {
                     Toast.makeText(
                         this, "Authentication failed.",
@@ -92,7 +81,6 @@ class LoginActivity : AppCompatActivity() {
         if(checkIfLoggedIn()){
             navigateOut()
         }
-
     }
     private fun checkIfLoggedIn(): Boolean{
         return mAuth.currentUser != null
@@ -103,6 +91,7 @@ class LoginActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
     private fun selectImage(){
         ImagePicker.with(this)
             .crop()
@@ -128,5 +117,3 @@ class LoginActivity : AppCompatActivity() {
         }
     }
 }
-
-    

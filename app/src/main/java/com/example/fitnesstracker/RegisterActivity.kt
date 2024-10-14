@@ -9,10 +9,7 @@ import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.ActionBar
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.navigation.findNavController
 import com.github.dhaval2404.imagepicker.ImagePicker
-import com.google.android.material.navigation.NavigationBarItemView
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -42,7 +39,6 @@ class RegisterActivity : AppCompatActivity() {
 
         val button_saveinfo = findViewById<Button>(R.id.button_profileSaveInfo)
         val button_cancel = findViewById<TextView>(R.id.button_cancel)
-
 
         val reg_email = findViewById<EditText>(R.id.reg_profileEmail)
         val reg_username = findViewById<EditText>(R.id.reg_profileUsername)
@@ -128,8 +124,8 @@ class RegisterActivity : AppCompatActivity() {
                 }
             }
         }
-
     }
+
     private fun registerUser(emailValue: String, passwordValue: String) {
         mAuth.createUserWithEmailAndPassword(emailValue, passwordValue)
             .addOnCompleteListener(this) { task ->
