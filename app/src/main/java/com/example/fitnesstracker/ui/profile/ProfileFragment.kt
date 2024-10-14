@@ -59,6 +59,7 @@ class ProfileFragment : Fragment() {
         val heightID = root.findViewById<TextView>(R.id.heightID)
         val weightID = root.findViewById<TextView>(R.id.weightID)
 
+        loadLatestHeightWeight(heightID, weightID)
 
         val c = Calendar.getInstance().time
         val df = SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault())
@@ -108,6 +109,24 @@ class ProfileFragment : Fragment() {
 
         return root
     }
+
+    private fun loadLatestHeightWeight(heightTextView: TextView, weightTextView: TextView) {
+        checkingsReference.orderByChild("displayname").equalTo(mAuth.currentUser?.displayName).limitToLast(1)
+            .get().addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    for (dataSnapshot in task.result.children) {
+                        val checking = dataSnapshot.getValue(Checkings::class.java)
+                        checking?.let {
+                            heightTextView.text = it.height
+                            weightTextView.text = it.weight
+                        }
+                    }
+                } else {
+                    Toast.makeText(activity, "Failed to load data: ${task.exception?.message}", Toast.LENGTH_LONG).show()
+                }
+            }
+    }
+
     private fun uploadData(date: String, height: String, weight: String) {
         val currentChecking = Checkings(mAuth.currentUser!!.displayName!!, date, height, weight)
 
