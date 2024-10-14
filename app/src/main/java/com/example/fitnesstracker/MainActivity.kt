@@ -16,10 +16,8 @@ import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.Menu
-import android.view.MenuItem
 import android.view.View
 import android.widget.EditText
-import android.widget.Switch
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
@@ -40,7 +38,6 @@ import com.mikhaellopez.circularprogressbar.CircularProgressBar
 import com.tapadoo.alerter.Alerter
 import de.hdodenhof.circleimageview.CircleImageView
 
-
 class MainActivity : AppCompatActivity(), SensorEventListener {
 
     private lateinit var appBarConfiguration: AppBarConfiguration
@@ -56,7 +53,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     private var totalDistance = 0f
     private var fileUri: Uri? = null
 
-    private val CHANNEL_ID = "channel_id_example"
+    private val CHANNEL_ID = "notification_channel"
     private val notificationID = 101
 
     private var optionsMenu: Menu? = null
@@ -65,15 +62,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
+        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
 
         setContentView(binding.root)
 
         loadData()
         resetSteps()
-
-        sensorManager = getSystemService(Context.SENSOR_SERVICE) as SensorManager
-
-        //createNotificationChannel()
+        createNotificationChannel()
 
 
 
@@ -115,12 +110,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                     }
                 })
                 .show()
-
         }
-
-
-
-
 
         val drawerLayout: DrawerLayout = binding.drawerLayout
         val navView: NavigationView = binding.navView
@@ -142,7 +132,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             true
         }
 
-
         val sp = PreferenceManager.getDefaultSharedPreferences(this)
         val notifications = sp.getBoolean("notifications", true)
 
@@ -156,14 +145,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             notificationManager.cancelAll()
         }
 
-
-
         var handler = Handler()
         var runnable: Runnable? = null
-
-
-
-
 
         val headerView: View = navView.getHeaderView(0)
 
@@ -179,9 +162,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     }
 
-
-
-
     private fun createNotificationChannel(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val name = "Notification name"
@@ -195,6 +175,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
     private fun sendNotification(){
         var stepstaken = findViewById<TextView>(R.id.steps_taken_id)
         val kmtaken = findViewById<TextView>(R.id.distanceID)
@@ -205,8 +186,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
         val pendingintent: PendingIntent = PendingIntent.getActivity(this, 0, intent, 0)
         val bitmapLargeIcon = BitmapFactory.decodeResource(applicationContext.resources, R.drawable.running_man)
-
-
 
         var builder = NotificationCompat.Builder(this, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_splash_logo)
@@ -220,7 +199,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         with(NotificationManagerCompat.from(this)){
             notify(notificationID, builder.build())
         }
-
 
     }
 
@@ -300,6 +278,10 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
     }
     private fun resetSteps(){
+
+        //Notify for previous status of data
+        sendNotification()
+
         var stepstaken = findViewById<TextView>(R.id.steps_taken_id)
         val kmtaken = findViewById<TextView>(R.id.distanceID)
         val calories = findViewById<TextView>(R.id.calories_id)

@@ -18,11 +18,7 @@ class ContactFragment : Fragment() {
 
     private lateinit var contactViewModel: ContactViewModel
     private var _binding: FragmentContactBinding? = null
-
-
     private val binding get() = _binding!!
-
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,7 +53,6 @@ class ContactFragment : Fragment() {
 
             startActivity(intent)
         }
-
         return root
     }
 
