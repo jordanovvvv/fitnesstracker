@@ -1,11 +1,15 @@
 package com.example.fitnesstracker
 
 import android.app.Activity
+import android.content.ContentValues.TAG
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.ActionBar
@@ -13,6 +17,7 @@ import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
+import com.google.firebase.auth.ktx.actionCodeSettings
 import de.hdodenhof.circleimageview.CircleImageView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
@@ -25,6 +30,7 @@ class RegisterActivity : AppCompatActivity() {
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private var fileUri: Uri? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register)
@@ -68,10 +74,48 @@ class RegisterActivity : AppCompatActivity() {
                 ).show()
             } else {
                 registerUser(emailValue, passwordValue)
-            }
+                val intent = intent
+                val emailLink = intent.data.toString()
 
+                if (mAuth.isSignInWithEmailLink(emailLink)) {
+                    val emailValue: String = reg_email.text.toString()
+                    mAuth.signInWithEmailLink(emailValue, emailLink)
+                        .addOnCompleteListener { task ->
+                            if (task.isSuccessful) {
+                                // Check if email is verified
+                                mAuth.currentUser?.reload()?.addOnCompleteListener {
+                                    if (mAuth.currentUser?.isEmailVerified == true) {
+                                        Toast.makeText(
+                                            this,
+                                            "Successfully signed in with a verified email!",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } else {
+                                        Toast.makeText(
+                                            this,
+                                            "Please verify your email first.",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                        mAuth.signOut() // Log out if not verified
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(
+                                    this,
+                                    "Error signing in with verified email! Try again!",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                }
+
+            }
         }
+
+
+
     }
+
     private fun setUserInfo() {
         val navView: NavigationView = findViewById(R.id.nav_view)
         val headerView: View = navView.getHeaderView(0)
@@ -131,29 +175,40 @@ class RegisterActivity : AppCompatActivity() {
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
                     mAuth.currentUser?.let {
-                        val reg_email = findViewById<EditText>(R.id.reg_profileEmail)
-                        val reg_username = findViewById<EditText>(R.id.reg_profileUsername)
+                        // Send email verification link
+                        val actionCodeSettings = actionCodeSettings {
+                            url = "https://fitnesstracker.page.link/verify?mode=action&oobCode=code"
+                            handleCodeInApp = true
+                            setIOSBundleId("com.example.ios")
+                            setAndroidPackageName("com.example.android", true, "12")
+                        }
 
-                        val username = reg_username.text.toString()
-                        val userProfilePicture = fileUri
-                        val userEmail = reg_email.text.toString()
+                        mAuth.sendSignInLinkToEmail(emailValue, actionCodeSettings)
+                            .addOnCompleteListener { emailTask ->
+                                if (emailTask.isSuccessful) {
+                                    Log.d(TAG, "Verification email sent to $emailValue.")
+                                    Toast.makeText(
+                                        this, "Verification email sent. Please verify before logging in.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                } else {
+                                    Log.e(TAG, "Failed to send verification email.", emailTask.exception)
+                                    Toast.makeText(
+                                        this, "Failed to send verification email.",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                            }
 
-                        val update = UserProfileChangeRequest.Builder()
-                            .setDisplayName(username)
-                            .setPhotoUri(userProfilePicture)
-                            .build()
+                        // Sign out the user to ensure they aren't automatically logged in
+                        mAuth.signOut()
 
-                        mAuth.currentUser!!.updateProfile(update)
-
-                        Toast.makeText(
-                            this, "Authentication successful.",
-                            Toast.LENGTH_SHORT
-                        ).show()
                         val intent = Intent(this, LoginActivity::class.java)
                         startActivity(intent)
                         finish()
                     }
                 } else {
+                    Log.e(TAG, "User creation failed.", task.exception)
                     Toast.makeText(
                         this, "Authentication failed.",
                         Toast.LENGTH_SHORT
@@ -162,12 +217,26 @@ class RegisterActivity : AppCompatActivity() {
             }
     }
 
+
     private fun selectImage(){
-        ImagePicker.with(this)
-            .crop()
-            .compress(1024)
-            .maxResultSize(1080, 1080)
-            .start()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ) {
+                requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 101)
+
+                ImagePicker.with(this)
+                    .crop()
+                    .compress(1024)
+                    .maxResultSize(1080, 1080)
+                    .start()
+            } else {
+                ImagePicker.with(this)
+                    .crop()
+                    .compress(1024)
+                    .maxResultSize(1080, 1080)
+                    .start()
+            }
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
