@@ -3,17 +3,16 @@ package com.example.fitnesstracker
 import android.app.Activity
 import android.content.ContentValues.TAG
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.graphics.drawable.AnimationDrawable
 import android.net.Uri
-import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.*
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.ActionBar
-import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.UserProfileChangeRequest
@@ -30,6 +29,7 @@ class RegisterActivity : AppCompatActivity() {
     private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
 
     private var fileUri: Uri? = null
+    private lateinit var reg_image: CircleImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,11 +49,20 @@ class RegisterActivity : AppCompatActivity() {
         val reg_email = findViewById<EditText>(R.id.reg_profileEmail)
         val reg_username = findViewById<EditText>(R.id.reg_profileUsername)
         val reg_password = findViewById<EditText>(R.id.reg_profilePassword)
-        val reg_image = findViewById<CircleImageView>(R.id.reg_profileImage)
+        reg_image = findViewById(R.id.reg_profileImage)
 
+        val imagePickerLauncher = registerForActivityResult(
+            ActivityResultContracts.PickVisualMedia()
+        ) { uri: Uri? ->
+            uri?.let {
+                fileUri = it
+                reg_image.setImageURI(fileUri) // Update the image view
+            }
+        }
 
         reg_image.setOnClickListener {
-            selectImage()
+            // Launch the image picker
+            imagePickerLauncher.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
         }
 
         button_cancel.setOnClickListener {
@@ -215,44 +224,5 @@ class RegisterActivity : AppCompatActivity() {
                     ).show()
                 }
             }
-    }
-
-
-    private fun selectImage(){
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (checkSelfPermission(android.Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ) {
-                requestPermissions(arrayOf(android.Manifest.permission.CAMERA), 101)
-
-                ImagePicker.with(this)
-                    .crop()
-                    .compress(1024)
-                    .maxResultSize(1080, 1080)
-                    .start()
-            } else {
-                ImagePicker.with(this)
-                    .crop()
-                    .compress(1024)
-                    .maxResultSize(1080, 1080)
-                    .start()
-            }
-        }
-
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        val reg_image = findViewById<CircleImageView>(R.id.reg_profileImage)
-        when(resultCode){
-            Activity.RESULT_OK -> {
-                fileUri = data?.data
-                reg_image.setImageURI(fileUri)
-            }
-            ImagePicker.RESULT_ERROR -> {
-                Toast.makeText(this, "There was an error picking the image!", Toast.LENGTH_LONG).show()
-            }
-            else -> {
-                Toast.makeText(this, "Image picking cancelled!", Toast.LENGTH_SHORT).show()
-            }
-        }
     }
 }

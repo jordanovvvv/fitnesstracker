@@ -9,7 +9,6 @@ import android.os.Bundle
 import android.widget.*
 import androidx.appcompat.app.ActionBar
 import androidx.constraintlayout.widget.ConstraintLayout
-import com.github.dhaval2404.imagepicker.ImagePicker
 import com.google.firebase.auth.FirebaseAuth
 import de.hdodenhof.circleimageview.CircleImageView
 
@@ -92,28 +91,4 @@ class LoginActivity : AppCompatActivity() {
         finish()
     }
 
-    private fun selectImage(){
-        ImagePicker.with(this)
-            .crop()
-            .compress(1024)
-            .maxResultSize(1080, 1080)
-            .start()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        val reg_image = findViewById<CircleImageView>(R.id.reg_profileImage)
-        when(resultCode){
-            Activity.RESULT_OK -> {
-                fileUri = data?.data
-                reg_image.setImageURI(fileUri)
-            }
-            ImagePicker.RESULT_ERROR -> {
-                Toast.makeText(this, "There was an error picking the image!", Toast.LENGTH_LONG).show()
-            }
-            else -> {
-                Toast.makeText(this, "Image picking cancelled!", Toast.LENGTH_SHORT).show()
-            }
-        }
-    }
 }
