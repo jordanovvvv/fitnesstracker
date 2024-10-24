@@ -67,42 +67,44 @@ class ProfileFragment : Fragment() {
 
         val button = root.findViewById<TextView>(R.id.hwButtonId)
         button.setOnClickListener {
-            Alerter.Companion.create(activity)
-                .setTitle("You want to track your stats?")
-                .setText("Click me to set record your weight and height!")
-                .setIcon(R.drawable.ic_alert)
-                .setBackgroundColorRes(R.color.nice_blue)
-                .setOnClickListener(View.OnClickListener {
-                    val builder = AlertDialog.Builder(requireActivity())
-                    val inflater = layoutInflater
-                    val dialogLayout = inflater.inflate(R.layout.weight_height_layout, null)
-                    val height = dialogLayout.findViewById<EditText>(R.id.set_height)
-                    val weight = dialogLayout.findViewById<EditText>(R.id.set_weight)
+            activity?.let { act ->
+                Alerter.Companion.create(act)
+                    .setTitle("You want to track your stats?")
+                    .setText("Click me to set record your weight and height!")
+                    .setIcon(R.drawable.ic_alert)
+                    .setBackgroundColorRes(R.color.nice_blue)
+                    .setOnClickListener(View.OnClickListener {
+                        val builder = AlertDialog.Builder(requireActivity())
+                        val inflater = layoutInflater
+                        val dialogLayout = inflater.inflate(R.layout.weight_height_layout, null)
+                        val height = dialogLayout.findViewById<EditText>(R.id.set_height)
+                        val weight = dialogLayout.findViewById<EditText>(R.id.set_weight)
 
-                    with(builder){
-                        setTitle("Enter your height and weight respectively:")
-                        setPositiveButton("Confirm"){dialog, which ->
-                            heightID.setText(height.text.toString() + " cm")
-                            weightID.setText(weight.text.toString() + " kg")
-                            val height1: String = heightID.text.toString()
-                            val weight1: String = weightID.text.toString()
-                            uploadData(formattedDate, height1, weight1)
+                        with(builder){
+                            setTitle("Enter your height and weight respectively:")
+                            setPositiveButton("Confirm"){dialog, which ->
+                                heightID.setText(height.text.toString() + " cm")
+                                weightID.setText(weight.text.toString() + " kg")
+                                val height1: String = heightID.text.toString()
+                                val weight1: String = weightID.text.toString()
+                                uploadData(formattedDate, height1, weight1)
 
-                            Alerter.Companion.create(activity)
-                                .setTitle("Success!")
-                                .setText("You have successfully set your height and weight!")
-                                .setIcon(R.drawable.ic_alert)
-                                .setBackgroundColorRes(R.color.nice_blue)
-                                .show()
+                                Alerter.Companion.create(act)
+                                    .setTitle("Success!")
+                                    .setText("You have successfully set your height and weight!")
+                                    .setIcon(R.drawable.ic_alert)
+                                    .setBackgroundColorRes(R.color.nice_blue)
+                                    .show()
+                            }
+                            setNegativeButton("Cancel"){dialog, which ->
+                                Log.d("MainActivity","NegativeButtonPressed")
+                            }
+                            setView(dialogLayout)
+                            show()
                         }
-                        setNegativeButton("Cancel"){dialog, which ->
-                            Log.d("MainActivity","NegativeButtonPressed")
-                        }
-                        setView(dialogLayout)
-                        show()
-                    }
-                })
-                .show()
+                    })
+                    .show()
+            }
 
         }
 

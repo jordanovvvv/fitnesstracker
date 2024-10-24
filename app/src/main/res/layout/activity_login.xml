@@ -82,14 +82,15 @@
         android:layout_height="32dp"
         android:fontFamily="@font/oswald_light"
         android:text="You still haven't joined us?"
+        android:textAlignment="center"
         android:textColor="#0B3961"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.357"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loginButton"
-        app:layout_constraintVertical_bias="0.909" />
+        app:layout_constraintVertical_bias="0.392" />
 
     <TextView
         android:id="@+id/registerButton"
@@ -97,13 +98,14 @@
         android:layout_height="28dp"
         android:fontFamily="@font/oswald_light"
         android:text="Register"
+        android:textAlignment="center"
         android:textColor="#EC2521"
         android:textSize="16sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toEndOf="@+id/textView"
-        app:layout_constraintTop_toBottomOf="@+id/loginButton"
-        app:layout_constraintVertical_bias="0.895" />
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

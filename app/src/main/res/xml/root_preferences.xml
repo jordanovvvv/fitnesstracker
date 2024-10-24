@@ -58,7 +58,8 @@
             app:key="notifications"
             app:summaryOff="You will no longer receive any notifications"
             app:summaryOn="You will receive all notifications"
-            app:title="Enable notifications" />
+            app:title="Enable notifications"
+            app:defaultValue="true"/>
     </PreferenceCategory>
 
 
