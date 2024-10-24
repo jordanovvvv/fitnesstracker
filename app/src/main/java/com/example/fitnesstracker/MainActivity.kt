@@ -27,6 +27,7 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.fitnesstracker.databinding.ActivityMainBinding
 import com.example.fitnesstracker.services.NotificationService
+import com.example.fitnesstracker.services.StepTrackingService
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -166,6 +167,9 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
             }
         }
 
+        val stepTrackingServiceIntent = Intent(this, StepTrackingService::class.java)
+        startService(stepTrackingServiceIntent)
+
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -187,7 +191,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     private fun navigateOut() {
-        val intent: Intent = Intent(this, LoginActivity::class.java)
+        val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
         finish()
     }
@@ -198,6 +202,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         //Start notification service when app is in background
         val serviceIntent = Intent(this, NotificationService::class.java)
         startService(serviceIntent)
+
     }
 
     override fun onResume() {
@@ -215,6 +220,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         } else {
             sensorManager?.registerListener(this, stepSensor, SensorManager.SENSOR_DELAY_UI)
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        val stepTrackingServiceIntent = Intent(this, StepTrackingService::class.java)
+        stopService(stepTrackingServiceIntent)
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
