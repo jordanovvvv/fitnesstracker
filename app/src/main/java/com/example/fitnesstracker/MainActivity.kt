@@ -224,9 +224,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
     override fun onDestroy() {
         super.onDestroy()
-
-        val stepTrackingServiceIntent = Intent(this, StepTrackingService::class.java)
-        stopService(stepTrackingServiceIntent)
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
