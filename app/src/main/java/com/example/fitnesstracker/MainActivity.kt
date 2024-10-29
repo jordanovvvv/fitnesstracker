@@ -3,6 +3,7 @@ package com.example.fitnesstracker
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.credentials.ClearCredentialStateRequest
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -25,6 +26,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.bumptech.glide.Glide
 import com.example.fitnesstracker.databinding.ActivityMainBinding
 import com.example.fitnesstracker.services.NotificationService
 import com.example.fitnesstracker.services.StepTrackingService
@@ -148,7 +150,13 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
 
         username.setText(mAuth.currentUser?.displayName)
         email.setText(mAuth.currentUser?.email)
-        picture.setImageURI(mAuth.currentUser?.photoUrl)
+        mAuth.currentUser?.photoUrl?.let { uri ->
+            Glide.with(this)
+                .load(uri)
+                .placeholder(R.drawable.running_man)
+                .error(R.drawable.running_man)
+                .into(picture)
+        }
         fileUri = mAuth.currentUser?.photoUrl
 
 

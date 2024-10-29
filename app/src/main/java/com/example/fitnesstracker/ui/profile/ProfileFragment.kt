@@ -11,6 +11,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import com.bumptech.glide.Glide
 import com.example.fitnesstracker.R
 import com.example.fitnesstracker.databinding.FragmentProfileBinding
 import com.example.fitnesstracker.models.Checkings
@@ -51,7 +52,13 @@ class ProfileFragment : Fragment() {
 
 
         val profileImage = root.findViewById<CircleImageView>(R.id.profileImage)
-        profileImage.setImageURI(mAuth.currentUser?.photoUrl)
+        mAuth.currentUser?.photoUrl?.let { uri ->
+            Glide.with(this)
+                .load(uri)
+                .placeholder(R.drawable.running_man)
+                .error(R.drawable.running_man)
+                .into(profileImage)
+        }
 
         val profileName = root.findViewById<TextView>(R.id.profileName)
         profileName.setText(mAuth.currentUser?.displayName)
