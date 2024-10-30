@@ -9,4 +9,6 @@
     <color name="white">#FFFFFFFF</color>
     <color name="nice_blue">#4F9FDF</color>
     <color name="transparent">#A6FFFFFF</color>
+    <color name="google_blue">#459DE4</color>
+    <color name="google_red">#FF0000</color>
 </resources>
