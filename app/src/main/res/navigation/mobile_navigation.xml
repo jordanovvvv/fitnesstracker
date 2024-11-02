@@ -33,4 +33,8 @@
         tools:layout="@layout/fragment_profile" >
 
     </fragment>
+    <fragment
+        android:id="@+id/nav_calendar"
+        android:name="com.example.fitnesstracker.ui.calendar.CalendarFragment"
+        android:label="@string/menu_calendar" />
 </navigation>

@@ -126,7 +126,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         // menu should be considered as top level destinations.
         appBarConfiguration = AppBarConfiguration(
             setOf(
-                R.id.nav_home, R.id.nav_settings, R.id.nav_profile, R.id.nav_contact
+                R.id.nav_home, R.id.nav_settings, R.id.nav_profile, R.id.nav_calendar, R.id.nav_contact
             ), drawerLayout
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -235,6 +235,8 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
     }
 
     override fun onSensorChanged(event: SensorEvent?) {
+        if(event == null) return
+
         var stepstaken = findViewById<TextView>(R.id.steps_taken_id)
         val kmtaken = findViewById<TextView>(R.id.distanceID)
         var progressBar = findViewById<CircularProgressBar>(R.id.circularProgressBar)
@@ -284,10 +286,11 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         }
         stepstaken.setOnLongClickListener {
             previoustotalSteps = totalSteps
-            stepstaken.text = 0.toString()
-            kmtaken.text = 0.toString() + " km"
+            totalSteps = 0f
+            stepstaken.text = "0"
+            kmtaken.text = "0 km"
             saveData()
-            calories.text = 0.toString()
+            calories.text = "0"
             totalCalories = 0f
             totalDistance = 0f
             true
