@@ -23,12 +23,13 @@ class StepTrackingService : LifecycleService() {
         Log.d("StepTrackingService", "Service started")
 
         lastSavedDate = getTodayDate()
+        adjustStepsFromLastEntry()
 
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
                 checkEndOfDay()
-                handler.postDelayed(this, 3600000) // check every 1 hour
+                handler.postDelayed(this, 3600000)
             }
         }, 3600000)
     }
@@ -51,8 +52,17 @@ class StepTrackingService : LifecycleService() {
         val steps = getCurrentSteps()
         val dailySteps = DailySteps(
             displayname = mAuth.currentUser?.displayName.toString(),
-            date = getTodayDate(),
+            date = lastSavedDate,
             steps = steps.toString()
+        )
+        saveStepsToFirestore(dailySteps)
+    }
+
+    private fun createInitialEntry() {
+        val dailySteps = DailySteps(
+            displayname = mAuth.currentUser?.displayName.toString(),
+            date = getTodayDate(),
+            steps = "0"
         )
         saveStepsToFirestore(dailySteps)
     }
@@ -82,6 +92,50 @@ class StepTrackingService : LifecycleService() {
         editor.putInt("currentSteps", 0)
         editor.apply()
         Log.d("StepTrackingService", "Steps reset to 0")
+    }
+
+    fun adjustStepsFromLastEntry() {
+        val currentUser = mAuth.currentUser?.displayName ?: return
+
+        db.collection("dailySteps")
+            .whereEqualTo("displayname", currentUser)
+            .orderBy("date", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { documents ->
+                if (!documents.isEmpty) {
+                    val lastEntry = documents.documents[0].toObject(DailySteps::class.java)
+
+                    val lastEntryDate = lastEntry?.date ?: getTodayDate()
+                    val currentDate = getTodayDate()
+
+                    if (lastEntryDate == currentDate) {
+                        val savedSteps = lastEntry?.steps?.toIntOrNull() ?: 0
+                        updateCurrentSteps(savedSteps)
+                        Log.d("StepTrackingService", "Loaded today's existing steps: $savedSteps")
+                    } else {
+                        resetSteps()
+                        createInitialEntry()
+                        Log.d("StepTrackingService", "Started new day with 0 steps")
+                    }
+                } else {
+                    resetSteps()
+                    createInitialEntry()
+                    Log.d("StepTrackingService", "No previous entries found, starting with 0 steps")
+                }
+            }
+            .addOnFailureListener { e ->
+                Log.e("StepTrackingService", "Error getting last entry", e)
+                resetSteps()
+            }
+    }
+
+    private fun updateCurrentSteps(steps: Int) {
+        val sharedPreferences = getSharedPreferences("myPrefs", MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putInt("currentSteps", steps)
+        editor.apply()
+        Log.d("StepTrackingService", "Updated current steps to: $steps")
     }
 
 }

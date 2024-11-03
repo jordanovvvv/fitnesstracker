@@ -2,16 +2,17 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="4dp">
+    android:layout_margin="5dp">
 
     <TextView
         android:id="@+id/calendarDayText"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center"
+        android:padding="5dp"
         android:textSize="14sp"
-        android:textColor="#666666"
+        android:textColor="#1C1B3B"
         android:background="@drawable/calendar_day_background"/>
 
 </FrameLayout>
