@@ -1,11 +1,12 @@
 package com.example.fitnesstracker.ui.calendar
 
-import android.icu.util.LocaleData
 import android.os.Bundle
 import android.util.Log
+import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CalendarView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
@@ -14,6 +15,9 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.example.fitnesstracker.R
 import com.example.fitnesstracker.databinding.FragmentCalendarBinding
+import com.example.fitnesstracker.models.DailySteps
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.kizitonwose.calendar.core.CalendarDay
 import com.kizitonwose.calendar.core.CalendarMonth
 import com.kizitonwose.calendar.core.DayPosition
@@ -21,6 +25,8 @@ import com.kizitonwose.calendar.core.daysOfWeek
 import com.kizitonwose.calendar.view.MonthDayBinder
 import com.kizitonwose.calendar.view.MonthHeaderFooterBinder
 import com.kizitonwose.calendar.view.ViewContainer
+import com.mikhaellopez.circularprogressbar.CircularProgressBar
+
 import java.time.DayOfWeek
 import java.time.LocalDate
 import java.time.YearMonth
@@ -32,8 +38,11 @@ import java.util.Locale
 class CalendarFragment : Fragment() {
 
     private lateinit var calendarViewModel: CalendarViewModel
+    private val mAuth: FirebaseAuth = FirebaseAuth.getInstance()
+    private val db = FirebaseFirestore.getInstance()
     private var _binding: FragmentCalendarBinding? = null
     private val binding get() = _binding!!
+    private val stepsData = mutableMapOf<LocalDate, Int>()
 
     private var selectedDate: LocalDate? = null
 
@@ -46,6 +55,7 @@ class CalendarFragment : Fragment() {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
 
         setupCalendar()
+        fetchStepData()
         return binding.root
     }
 
@@ -89,11 +99,19 @@ class CalendarFragment : Fragment() {
                     container.day = day
                     val textView = container.textView
                     textView.text = day.date.dayOfMonth.toString()
+                    var progressBar = container.progressBar
+
 
                     when (day.position) {
                         DayPosition.MonthDate -> {
                             textView.visibility = View.VISIBLE
 
+                            val stepsForDay = stepsData[day.date]
+                            if (stepsForDay != null) {
+                                progressBar.setProgressWithAnimation(stepsForDay.toFloat())
+                            } else {
+                                progressBar.setProgressWithAnimation(0f)
+                            }
                             when {
                                 // Selected date
                                 selectedDate == day.date -> {
@@ -132,6 +150,26 @@ class CalendarFragment : Fragment() {
         }
     }
 
+    private fun fetchStepData() {
+        val currentUser = mAuth.currentUser?.displayName ?: return
+        db.collection("dailySteps")
+            .whereEqualTo("displayname", currentUser)
+            .get()
+            .addOnSuccessListener { documents ->
+                for (document in documents) {
+                    val dailySteps = document.toObject(DailySteps::class.java)
+                    dailySteps.date?.let { date ->
+                        val localDate = LocalDate.parse(date)
+                        stepsData[localDate] = dailySteps.steps.toIntOrNull() ?: 0
+                    }
+                }
+                binding.calendarView.notifyCalendarChanged()
+            }
+            .addOnFailureListener { e ->
+                Log.e("CalendarFragment", "Error fetching steps data", e)
+            }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -140,6 +178,7 @@ class CalendarFragment : Fragment() {
     inner class DayViewContainer(view: View) : ViewContainer(view) {
         lateinit var day: CalendarDay
         val textView: TextView = view.findViewById(R.id.calendarDayText)
+        val progressBar: CircularProgressBar = view.findViewById(R.id.calendarStepsProgressBar)
 
         init {
             view.setOnClickListener {
@@ -151,14 +190,19 @@ class CalendarFragment : Fragment() {
                         binding.calendarView.notifyDateChanged(date)
                         oldDate?.let { binding.calendarView.notifyDateChanged(it) }
                     }
+
+                    val steps = stepsData[day.date] ?: 0
                     Toast.makeText(
                         view.context,
-                        date.format(DateTimeFormatter.ofPattern("dd MMM, yyyy")),
+                        "$steps steps on " + date.format(DateTimeFormatter.ofPattern("dd MMM, yyyy")),
                         Toast.LENGTH_SHORT
-                    ).show()                }
+                    ).show()
+
+                }
             }
         }
     }
+
 
     inner class MonthHeaderViewContainer(view: View) : ViewContainer(view) {
         val monthTextView: TextView = view.findViewById(R.id.monthTextView)

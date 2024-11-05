@@ -63,8 +63,8 @@ class NotificationService : Service(){
     private fun sendNotification() {
         val sharedPreferences = getSharedPreferences("myPrefs", Context.MODE_PRIVATE)
         val stepsTaken = sharedPreferences.getInt("currentSteps", 0)
-        val caloriesBurned = sharedPreferences.getFloat("totalCalories", 0f)
-        val distanceWalked = sharedPreferences.getFloat("totalDistance", 0f)
+        val caloriesBurned = sharedPreferences.getFloat("totalCalories", (stepsTaken.toFloat()*0.04).toFloat())
+        val distanceWalked = sharedPreferences.getFloat("totalDistance", (stepsTaken.toFloat()*80)/100000)
 
         val intent = Intent(this, MainActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK

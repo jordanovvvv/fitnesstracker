@@ -1,18 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_margin="5dp">
+    android:layout_height="100dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="4dp">
+
+
+    <!-- Circular ProgressBar -->
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:id="@+id/calendarStepsProgressBar"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:layout_centerInParent="true"
+        app:cpb_background_progressbar_color="#FFFFFF"
+        app:cpb_background_progressbar_width="6dp"
+        app:cpb_progress_direction="to_right"
+        app:cpb_progress_max="10000"
+        app:cpb_progressbar_color="#FF5722"
+        app:cpb_progressbar_width="6dp"
+        app:cpb_round_border="false"
+    />
 
     <TextView
         android:id="@+id/calendarDayText"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_gravity="center"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
         android:gravity="center"
-        android:padding="5dp"
-        android:textSize="14sp"
-        android:textColor="#1C1B3B"
-        android:background="@drawable/calendar_day_background"/>
-
-</FrameLayout>
+        android:padding="10dp"
+        android:textSize="16sp"
+        android:textColor="#1C1B3B" />
+</RelativeLayout>
