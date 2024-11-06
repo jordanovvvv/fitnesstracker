@@ -1,0 +1,5 @@
+<!-- res/drawable/textview_background.xml -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#70FFFFFF" /> <!-- 50% transparent white -->
+    <corners android:radius="12dp" /> <!-- Rounded corners with 12dp radius -->
+</shape>
