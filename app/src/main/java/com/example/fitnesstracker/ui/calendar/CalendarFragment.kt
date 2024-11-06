@@ -1,5 +1,7 @@
 package com.example.fitnesstracker.ui.calendar
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.util.Size
@@ -13,6 +15,7 @@ import android.widget.Toast
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.preference.PreferenceManager
 import com.example.fitnesstracker.R
 import com.example.fitnesstracker.databinding.FragmentCalendarBinding
 import com.example.fitnesstracker.models.DailySteps
@@ -55,7 +58,13 @@ class CalendarFragment : Fragment() {
         _binding = FragmentCalendarBinding.inflate(inflater, container, false)
 
         setupCalendar()
+
+        //Fetch data for each day in the calendar
         fetchStepData()
+
+        // Set default data for today's date
+        setDefaultTodayData()
+
         return binding.root
     }
 
@@ -170,6 +179,26 @@ class CalendarFragment : Fragment() {
             }
     }
 
+    private fun setDefaultTodayData() {
+        val today = LocalDate.now()
+        selectedDate = today
+
+        val stepsToday = stepsData[today] ?: 0
+        val caloriesBurnedToday = (stepsToday * 0.04).toFloat()
+        val distanceWalkedToday = (stepsToday * 80) / 100000f
+
+        binding.apply {
+            calendarSelectedDate.text = today.format(DateTimeFormatter.ofPattern("dd MMM, yyyy"))
+            calendarSelectedSteps.text = "$stepsToday steps"
+            calendarDistance.text = String.format("%.2f km", distanceWalkedToday)
+            calendarCalories.text = String.format("%.2f kcal", caloriesBurnedToday)
+
+            calendarSelectedStepsProgressBar.setProgressWithAnimation(stepsToday.toFloat())
+            calendarCaloriesProgressBar.setProgressWithAnimation(caloriesBurnedToday)
+            calendarKmProgressBar.setProgressWithAnimation(distanceWalkedToday)
+        }
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
@@ -190,13 +219,26 @@ class CalendarFragment : Fragment() {
                         binding.calendarView.notifyDateChanged(date)
                         oldDate?.let { binding.calendarView.notifyDateChanged(it) }
                     }
+                    val steps_init = stepsData[day.date] ?: 0
+                    val caloriesBurned_init = (steps_init.toFloat()*0.04).toFloat()
+                    val distanceWalked_init = (steps_init.toFloat()*80)/100000
 
-                    val steps = stepsData[day.date] ?: 0
-                    Toast.makeText(
-                        view.context,
-                        "$steps steps on " + date.format(DateTimeFormatter.ofPattern("dd MMM, yyyy")),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    binding.apply {
+                        calendarSelectedDate.text = date.format(DateTimeFormatter.ofPattern("dd MMM, yyyy"))
+                        calendarSelectedSteps.text = steps_init.toString() + " steps"
+                        calendarDistance.text = distanceWalked_init.toString() + " km"
+                        calendarCalories.text = caloriesBurned_init.toString() + " kcal"
+
+                        calendarSelectedStepsProgressBar.apply {
+                            setProgressWithAnimation(steps_init.toFloat())
+                        }
+                        calendarCaloriesProgressBar.apply {
+                            setProgressWithAnimation(caloriesBurned_init)
+                        }
+                        calendarKmProgressBar.apply {
+                            setProgressWithAnimation(distanceWalked_init)
+                        }
+                    }
 
                 }
             }

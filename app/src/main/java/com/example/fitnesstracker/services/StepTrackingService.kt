@@ -115,7 +115,6 @@ class StepTrackingService : LifecycleService() {
                         Log.d("StepTrackingService", "Loaded today's existing steps: $savedSteps")
                     } else {
                         resetSteps()
-                        createInitialEntry()
                         Log.d("StepTrackingService", "Started new day with 0 steps")
                     }
                 } else {

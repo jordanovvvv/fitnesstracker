@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/calendarSteps"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:padding="0dp"
@@ -16,20 +16,135 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintVertical_bias="0.015"
         app:lottie_autoPlay="true"
         app:lottie_loop="true"
         app:lottie_rawRes="@raw/live_background" />
 
+    <TextView
+        android:id="@+id/calendarSelectedSteps"
+        android:layout_width="140dp"
+        android:layout_height="43dp"
+        android:background="@drawable/textview_background"
+        android:textAlignment="center"
+        android:textColor="#1185E1"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.527"
+        app:layout_constraintStart_toEndOf="@+id/calendarSelectedStepsProgressBar"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        app:layout_constraintVertical_bias="0.201" />
+
+    <TextView
+        android:id="@+id/calendarSelectedDate"
+        android:layout_width="191dp"
+        android:layout_height="33dp"
+        android:textAlignment="center"
+        android:textColor="#FFFFFF"
+        android:background="@drawable/textview_background"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.159"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/calendarSelectedStepsProgressBar"
+        app:layout_constraintVertical_bias="0.138" />
+
     <com.kizitonwose.calendar.view.CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="400dp"
         app:cv_dayViewResource="@layout/calendar_day_layout"
         app:cv_monthHeaderResource="@layout/calendar_header_layout"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:id="@+id/calendarKmProgressBar"
+        android:layout_width="164dp"
+        android:layout_height="166dp"
+        app:cpb_background_progressbar_color="#70FFFFFF"
+        app:cpb_background_progressbar_width="13dp"
+        app:cpb_progress_direction="to_right"
+        app:cpb_progress_max="9"
+        app:cpb_progressbar_color="#66BB6A"
+        app:cpb_progressbar_width="16dp"
+        app:cpb_round_border="false"
+        app:layout_constraintBottom_toBottomOf="@+id/calendarSelectedStepsProgressBar"
+        app:layout_constraintEnd_toEndOf="@+id/calendarSelectedStepsProgressBar"
+        app:layout_constraintStart_toStartOf="@+id/calendarSelectedStepsProgressBar"
+        app:layout_constraintTop_toTopOf="@+id/calendarSelectedStepsProgressBar" />
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:id="@+id/calendarSelectedStepsProgressBar"
+        android:layout_width="229dp"
+        android:layout_height="220dp"
+        app:cpb_background_progressbar_color="#70FFFFFF"
+        app:cpb_background_progressbar_width="13dp"
+        app:cpb_progress_direction="to_right"
+        app:cpb_progress_max="10000"
+        app:cpb_progressbar_color="#1185E1"
+        app:cpb_progressbar_width="16dp"
+        app:cpb_round_border="false"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.083"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.782" />
+
+    <com.mikhaellopez.circularprogressbar.CircularProgressBar
+        android:id="@+id/calendarCaloriesProgressBar"
+        android:layout_width="101dp"
+        android:layout_height="104dp"
+        app:cpb_background_progressbar_color="#70FFFFFF"
+        app:cpb_background_progressbar_width="13dp"
+        app:cpb_progress_direction="to_right"
+        app:cpb_progress_max="400"
+        app:cpb_progressbar_color="#E64A19"
+        app:cpb_progressbar_width="16dp"
+        app:cpb_round_border="false"
+        app:layout_constraintBottom_toBottomOf="@+id/calendarKmProgressBar"
+        app:layout_constraintEnd_toEndOf="@+id/calendarKmProgressBar"
+        app:layout_constraintHorizontal_bias="0.507"
+        app:layout_constraintStart_toStartOf="@+id/calendarKmProgressBar"
+        app:layout_constraintTop_toTopOf="@+id/calendarKmProgressBar"
+        app:layout_constraintVertical_bias="0.492" />
+
+    <TextView
+        android:id="@+id/calendarDistance"
+        android:layout_width="140dp"
+        android:layout_height="43dp"
+        android:textAlignment="center"
+        android:textColor="#66BB6A"
+        android:background="@drawable/textview_background"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintStart_toEndOf="@+id/calendarSelectedStepsProgressBar"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView"
+        app:layout_constraintVertical_bias="0.35" />
+
+    <TextView
+        android:id="@+id/calendarCalories"
+        android:layout_width="140dp"
+        android:layout_height="43dp"
+        android:textAlignment="center"
+        android:textColor="#E64A19"
+        android:background="@drawable/textview_background"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintStart_toEndOf="@+id/calendarSelectedStepsProgressBar"
+        app:layout_constraintTop_toBottomOf="@+id/calendarView" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
