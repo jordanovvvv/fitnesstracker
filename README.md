@@ -84,4 +84,6 @@ The **Fitness Tracker** app is an Android application designed to help users tra
 
    ```bash
    git clone https://github.com/jordanovvvv/fitnesstracker.git
+2. **Wait for Gradle to build**
+3. **Run the application**
 
