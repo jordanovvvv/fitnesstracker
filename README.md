@@ -43,36 +43,24 @@ The **Fitness Tracker** app is an Android application designed to help users tra
 
 2. **Java Development Kit (JDK):**
    - The project requires **JDK 17** for compatibility. Please ensure you have **JDK 17** installed on your machine.
+   - The app uses **Java 17** as the **source** and **target** compatibility version. Ensure that **JDK 17** is correctly installed and Android Studio is configured to use it.
    - Download **JDK 17** from the official [Oracle website](https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html) or use an alternative like [OpenJDK](https://adoptopenjdk.net/).
 
 3. **Android SDK:**
    - The app requires the **SDK 35** to build and run. You can manage SDK versions through the **SDK Manager** in Android Studio. Ensure that you have **SDK 35** installed.
-
-4. **Kotlin:**
-   - The project uses **Kotlin** for development. Android Studio should already have Kotlin support enabled by default. The project is configured with **JVM Target 17**, so ensure you have the correct Kotlin version installed.
-
-5. **Gradle:**
-   - The project uses **Gradle** as the build system. Ensure your Gradle version is compatible with the Android Studio version you are using. If needed, Android Studio will prompt you to update the Gradle version.
-
-6. **Firebase Account:**
-   - Set up a **Firebase project** in the [Firebase Console](https://console.firebase.google.com/).
-   - Add Firebase services (Firestore, Realtime Database, Firebase Authentication, etc.) to your app. Download the `google-services.json` file from the Firebase Console and place it in the `app/` directory of your project.
-
----
-
-### Additional Requirements Based on the `build.gradle` Configuration
-
-1. **Minimum SDK Version:**
+     
+4. **Minimum SDK Version:**
    - The app has a **minSdkVersion** of **26** (Android 8.0 Oreo). Ensure that the devices you are targeting run at least Android 8.0 or higher.
 
-2. **Target SDK Version:**
-   - The app targets **SDK 35**. Ensure your project is using the correct Android SDK and the devices you are testing on run at least **API Level 35**.
+5. **Kotlin:**
+   - The project uses **Kotlin** for development. Android Studio should already have Kotlin support enabled by default. The project is configured with **JVM Target 17**, so ensure you have the correct Kotlin version installed.
 
-3. **Java Version Compatibility:**
-   - The app uses **Java 17** as the **source** and **target** compatibility version. Ensure that **JDK 17** is correctly installed and Android Studio is configured to use it.
+6. **Gradle:**
+   - The project uses **Gradle** as the build system. Ensure your Gradle version is compatible with the Android Studio version you are using. If needed, Android Studio will prompt you to update the Gradle version.
 
-4. **Kotlin Configuration:**
-   - The project is set to use **JVM Target 17** for Kotlin, ensuring compatibility with Java 17. Make sure your Kotlin plugin is up-to-date and supports this configuration.
+7. **Firebase Account:**
+   - Set up a **Firebase project** in the [Firebase Console](https://console.firebase.google.com/).
+   - Add Firebase services (Firestore, Realtime Database, Firebase Authentication, etc.) to your app. Download the `google-services.json` file from the Firebase Console and place it in the `app/` directory of your project.
 
 ---
 
@@ -86,4 +74,9 @@ The **Fitness Tracker** app is an Android application designed to help users tra
    git clone https://github.com/jordanovvvv/fitnesstracker.git
 2. **Wait for Gradle to build**
 3. **Run the application**
+
+---
+
+### Latest Build (APK)
+[Download](https://github.com/jordanovvvv/fitnesstracker/blob/0dd91121e410549b404eb308e718868c029cd359/app/release/app-release.apk)
 
