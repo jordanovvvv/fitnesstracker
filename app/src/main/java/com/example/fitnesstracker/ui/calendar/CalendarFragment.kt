@@ -1,21 +1,15 @@
 package com.example.fitnesstracker.ui.calendar
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
-import android.util.Size
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CalendarView
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.view.children
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.preference.PreferenceManager
 import com.example.fitnesstracker.R
 import com.example.fitnesstracker.databinding.FragmentCalendarBinding
 import com.example.fitnesstracker.models.DailySteps

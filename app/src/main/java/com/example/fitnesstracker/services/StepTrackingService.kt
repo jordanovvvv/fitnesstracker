@@ -5,6 +5,7 @@ import android.os.Looper
 import android.util.Log
 import android.widget.Toast
 import androidx.lifecycle.LifecycleService
+import androidx.preference.PreferenceManager
 import com.example.fitnesstracker.models.DailySteps
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -25,10 +26,23 @@ class StepTrackingService : LifecycleService() {
         lastSavedDate = getTodayDate()
         adjustStepsFromLastEntry()
 
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val lastSyncDate = sharedPreferences.getString("lastSyncDate", "")
+        val isSyncEnabled = sharedPreferences.getBoolean("sync", false)
+        val isSyncWeeklyEnabled = sharedPreferences.getBoolean("syncStepsWeekly", false)
+
         val handler = Handler(Looper.getMainLooper())
         handler.postDelayed(object : Runnable {
             override fun run() {
-                checkEndOfDay()
+                if(isSyncEnabled){
+                    if (isSyncWeeklyEnabled && isWeekPassed(lastSyncDate)) {
+                        syncWeeklyData()
+                        updateLastSyncDate()
+                    } else {
+                        checkEndOfDay()
+                        updateLastSyncDate()
+                    }
+                }
                 handler.postDelayed(this, 3600000)
             }
         }, 3600000)
@@ -42,6 +56,32 @@ class StepTrackingService : LifecycleService() {
             resetSteps()
             lastSavedDate = currentDate
         }
+    }
+
+    private fun isWeekPassed(lastSyncDate: String?): Boolean {
+        if (lastSyncDate.isNullOrEmpty()) return true
+
+        val lastDate = dateFormat.parse(lastSyncDate)
+        val currentDate = Date()
+
+        val difference = currentDate.time - lastDate.time
+        val daysDifference = difference / (1000 * 60 * 60 * 24)
+
+        return daysDifference >= 7
+    }
+
+    private fun syncWeeklyData() {
+        saveStepsToDatabase()
+        resetSteps()
+        lastSavedDate = getTodayDate()
+        Log.d("StepTrackingService", "Weekly sync completed")
+    }
+
+    private fun updateLastSyncDate() {
+        val sharedPreferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val editor = sharedPreferences.edit()
+        editor.putString("lastSyncDate", getTodayDate())
+        editor.apply()
     }
 
     private fun getTodayDate(): String {

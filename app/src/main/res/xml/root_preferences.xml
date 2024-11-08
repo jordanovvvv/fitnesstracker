@@ -36,7 +36,7 @@
             app:title="@string/attachment_title" />
         <SwitchPreferenceCompat
             app:dependency="sync"
-            app:key="steps"
+            app:key="syncStepsWeekly"
             app:summaryOff="@string/steps_summary_off"
             app:summaryOn="@string/steps_summary_on"
             app:title="@string/steps_title"

@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.credentials.ClearCredentialStateRequest
+import android.graphics.Color
 import android.hardware.Sensor
 import android.hardware.SensorEvent
 import android.hardware.SensorEventListener
@@ -15,6 +16,7 @@ import android.os.Handler
 import android.util.Log
 import android.view.Menu
 import android.view.View
+import android.view.WindowManager
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
@@ -80,6 +82,7 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
         resetSteps()
 
         setSupportActionBar(binding.appBarMain.toolbar)
+
 
         binding.appBarMain.fab.setOnClickListener { view ->
                 Alerter.Companion.create(this)
@@ -158,8 +161,6 @@ class MainActivity : AppCompatActivity(), SensorEventListener {
                 .into(picture)
         }
         fileUri = mAuth.currentUser?.photoUrl
-
-
     }
 
     override fun onStart() {
